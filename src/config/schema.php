@@ -48,5 +48,7 @@ function load()
             $table->foreign('creator_id')->references('id')->on('users');
             $table->timestamps();
         });
+
+
     }
 }
