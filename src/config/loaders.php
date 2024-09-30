@@ -14,13 +14,14 @@ function bootstrap()
 
     $capsule = new Capsule();
     $capsule->addConnection([
-        'driver'    => 'sqlite',
-        'database'  => $dbPath,
-        /* 'username'  => 'root', */
-        /* 'password'  => 'password', */
-        /* 'charset'   => 'utf8', */
-        /* 'collation' => 'utf8_unicode_ci', */
-        /* 'prefix'    => '', */
+        'driver'    => 'pgsql',
+        'host'      => 'localhost',
+        'database'  => 'eloquent',
+        'username'  => 'mad',
+        'password'  => '799142',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => '',
     ]);
     // Make this Capsule instance available globally via static methods... (optional)
     $capsule->setAsGlobal();
