@@ -6,65 +6,61 @@ use App\Models\User;
 
 class Users
 {
-    public static function index()
+    public static function index($params = [])
     {
-        return User::all();
-    }
+        if (empty($params)) {
+            return User::query()->get()->toArray();
+        }
+        foreach ($params as $kye => $value) {
+            if ($kye == 'q') {
+                if (array_key_exists('email', $value)) {
+                    $email = $value['email'];
+                } elseif (array_key_exists('first_name', $value)) {
+                    $first_name = $value['first_name'];
+                } elseif (array_key_exists('last_name', $value)) {
+                    $last_name = $value['last_name'];
+                }
+            } /*elseif ($kye == 's') {
+                $sort = explode(':', $value);
+                $user4 = User::query()->orderBy($sort[0], $sort[1])->get()->toArray();
+                print_r($user4);
+            }*/
+        }
+        $result[] = User::query()->where('email', $email)->get()->toArray();
+        $result[] = User::query()->where('first_name', $first_name)->get()->toArray();
+        $result[] = User::query()->where('last_name', $last_name)->get()->toArray();
 
+
+        return $result;
+    }
     public static function create($params)
     {
-        $newUser = new User();
+        $newUser = new User($params);
 
-        if (array_key_exists('first_name', $params)) {
-            $newUser->first_name = $params['first_name'];
-        } else {
-            return 'Заполните "first_name"';
-        };
-
-        if (array_key_exists('last_name', $params)) {
-            $newUser->last_name = $params['last_name'];
-        } else {
-            return 'Заполните "last_name"';
-        };
-        if (array_key_exists('email', $params)) {
-            $newUser->email = $params['email'];
-        } else {
-            return 'Заполните "email"';
-        };
-        if (array_key_exists ('password', $params)) {
-            $newUser->password = password_hash( $params['password'], PASSWORD_DEFAULT);
+        if (array_key_exists('password', $params)) {
+            $newUser->password = password_hash($params['password'], PASSWORD_DEFAULT);
         } else {
             return 'Заполните "password"';
         };
 
         $newUser->save();
-
-        dump($newUser->id);
-
-        return User::find($newUser->id) ;
+        return $newUser;
     }
 
 
     public static function update($id, $params)
     {
-
         if ($user = User::findOrFail($id)) {
-            if (array_key_exists('first_name', $params)) {
-                $user->first_name = $params['first_name'];
-            };
-            if (array_key_exists('last_name', $params)) {
-                $user->last_name = $params['last_name'];
-            };
-            if (array_key_exists('email', $params)) {
-                $user->email = $params['email'];
-            };
-            if (array_key_exists ('password', $params)) {
-                $user->password = password_hash( $params['password'], PASSWORD_DEFAULT);
+            $user->fill($params);
+            if (array_key_exists('password', $params)) {
+                $user->password = password_hash($params['password'], PASSWORD_DEFAULT);
             };
             $user->save();
-        } else return falce;
+        } else {
+            return falce;
+        }
 
-        return User::find($id);
+        return $user;
     }
 
     public static function delete($id)
