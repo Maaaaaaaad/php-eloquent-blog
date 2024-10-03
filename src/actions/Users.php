@@ -75,4 +75,12 @@ class Users
 
         return $user->delete();
     }
+
+    public static function find($id)
+    {
+        $user = User::find($id);
+        foreach($user->posts as $post) {
+            echo $post;
+        }
+    }
 }

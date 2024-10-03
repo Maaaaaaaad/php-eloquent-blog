@@ -18,6 +18,6 @@ class User extends Model
 
     public function postLikes()
     {
-        return $this->hasMany(__NAMESPACE__ . '\PostLike');
+        return $this->hasMany(__NAMESPACE__ . '\PostLike', 'creator_id');
     }
 }
