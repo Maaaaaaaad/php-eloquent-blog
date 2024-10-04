@@ -3,28 +3,46 @@
 namespace App\actions;
 
 use App\Models\Post;
-use App\Models\PostLike;
-use App\Models\User;
 
 class Posts
 {
+    public static function index($user, $limit)
+    {
+        $posts = Post::all();
+        $postsID = $posts->pluck('id');
+        $like = $user->postLikes()->get();
+        $likePostId = $like->pluck('post_id')->unique()->toArray();
+
+
+        $likePosts = $posts->intersect(Post::whereIn('id', $likePostId)->get());
+
+
+        foreach ($posts as $key => $value) {
+
+            $result['post'] = $likePosts->toArray();
+            $result['liked'] = true;
+
+/*            if ($value->id == $likePosts->post_id) {
+
+            } else {
+                $result['post'] = $value->getAttributes();
+                $result['liked'] = false;
+            }*/
+
+        }
+        dump($result);
+    }
     public static function create($user, $params)
     {
-        // BEGIN (write your solution here)
-        $user = User::find($user);
         $post = $user->posts()->make($params);
-
         $post->save();
-
         return $post;
     }
 
     public static function createLike($user, $post)
     {
-        // BEGIN (write your solution here)
-        $like = new PostLike();
+        $like = $post->likes()->make();
         $like->creator()->associate($user);
-        $like->post()->associate($post);
         $like->save();
 
         return $like;

@@ -79,7 +79,7 @@ class Users
     public static function find($id)
     {
         $user = User::find($id);
-        foreach($user->posts as $post) {
+        foreach ($user->posts as $post) {
             echo $post;
         }
     }
