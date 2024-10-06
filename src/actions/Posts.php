@@ -8,29 +8,30 @@ class Posts
 {
     public static function index($user, $limit)
     {
-        $posts = Post::all();
-        $postsID = $posts->pluck('id');
-        $like = $user->postLikes()->get();
-        $likePostId = $like->pluck('post_id')->unique()->toArray();
+        $posts = Post::limit($limit)->orderBy('created_at', 'desc')->get();
+
+        $likePostIds = $user->postLikes()->pluck('post_id')->unique()->toArray();
+
+        $likePosts = $posts->intersect(Post::whereIn('id', $likePostIds)->get());
+        $notLike = $posts->diff($likePosts);
 
 
-        $likePosts = $posts->intersect(Post::whereIn('id', $likePostId)->get());
 
+        $result = $posts->map(function ($value) use ($likePosts, $notLike) {
+            foreach ($likePosts as $item) {
+                if ($value == $item) {
+                    return ['post' => $value->toArray(), 'liked' => true];
+                }
+            }
+            foreach ($notLike as $item) {
+                if ($value == $item) {
+                    return ['post' => $value->toArray(), 'liked' => false];
+                }
+            }
+        });
 
-        foreach ($posts as $key => $value) {
+        return $result->toArray();
 
-            $result['post'] = $likePosts->toArray();
-            $result['liked'] = true;
-
-/*            if ($value->id == $likePosts->post_id) {
-
-            } else {
-                $result['post'] = $value->getAttributes();
-                $result['liked'] = false;
-            }*/
-
-        }
-        dump($result);
     }
     public static function create($user, $params)
     {
