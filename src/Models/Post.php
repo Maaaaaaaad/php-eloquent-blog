@@ -30,4 +30,15 @@ class Post extends Model
     {
         return $this->hasMany(__NAMESPACE__ . '\PostLike');
     }
+
+    public function scopePublished($query)
+    {
+        return $query->where('state', 'published');
+    }
+
+    public function scopeMostLiked($query, $limit)
+    {
+        return $query->orderBy('likes_count', 'desc')->limit($limit);
+    }
+
 }

@@ -8,6 +8,11 @@ class Posts
 {
     public static function index($user, $limit)
     {
+        return $user->posts()->Published()->Mostliked($limit)->get();
+
+
+
+/*
         $posts = Post::limit($limit)->orderBy('created_at', 'desc')->get();
 
         $likePostIds = $user->postLikes()->pluck('post_id')->unique()->toArray();
@@ -31,7 +36,7 @@ class Posts
         });
 
         return $result->toArray();
-
+*/
     }
     public static function create($user, $params)
     {

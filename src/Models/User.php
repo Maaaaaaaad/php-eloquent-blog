@@ -20,4 +20,5 @@ class User extends Model
     {
         return $this->hasMany(__NAMESPACE__ . '\PostLike', 'creator_id');
     }
+
 }
