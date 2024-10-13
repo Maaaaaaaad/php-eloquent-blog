@@ -1,25 +1,28 @@
 <?php
 
+namespace App\KeyValueFunctions;
+
 require __DIR__ . '/../vendor/autoload.php';
-require 'public/LinkedList.php';
-require 'public/Node.php';
 
-use App\Node;
+use App\InMemoryKV;
 
-
-$list = new Node(1, new Node(2, new Node(3)));
-
-
-function revers(Node $node)
+function swapKeyValue($obj)
 {
-    $res = $node;
-    if ($res->getNext() != null) {
-        $res = revers($res->getNext());
-
+    $res = $obj->toArray();
+    foreach ($res as $key => $value) {
+        $obj->unset($key);
     }
 
-    return $res;
+    foreach ($res as $key => $value) {
+        $obj->set($value, $key);
+    }
+    return $obj;
 }
 
-revers($list);
+
+$map = new InMemoryKV(['foo' => 'bar', 'bar' => 'zoo']);
+
+
+
+dump(swapKeyValue($map));
 
